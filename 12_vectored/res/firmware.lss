@@ -1,0 +1,248 @@
+
+res/firmware.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_vector_table>:
+   0:	1800006f          	j	180 <_start>
+	...
+  e0:	03c4                	addi	s1,sp,452
+	...
+
+00000180 <_start>:
+ 180:	20008117          	auipc	sp,0x20008
+ 184:	e8010113          	addi	sp,sp,-384 # 20008000 <_stack_end>
+ 188:	00000297          	auipc	t0,0x0
+ 18c:	17828293          	addi	t0,t0,376 # 300 <nmi_entry>
+ 190:	7c32a073          	csrs	0x7c3,t0
+ 194:	20000293          	li	t0,512
+ 198:	7d02a073          	csrs	0x7d0,t0
+ 19c:	00000293          	li	t0,0
+ 1a0:	30729073          	csrw	mtvt,t0
+ 1a4:	00000297          	auipc	t0,0x0
+ 1a8:	16028293          	addi	t0,t0,352 # 304 <irq_entry>
+ 1ac:	7ec29073          	csrw	0x7ec,t0
+ 1b0:	7ec0e073          	csrsi	0x7ec,1
+ 1b4:	00000297          	auipc	t0,0x0
+ 1b8:	1cc28293          	addi	t0,t0,460 # 380 <trap_entry>
+ 1bc:	fc02f293          	andi	t0,t0,-64
+ 1c0:	0032e293          	ori	t0,t0,3
+ 1c4:	30529073          	csrw	mtvec,t0
+ 1c8:	43400513          	li	a0,1076
+ 1cc:	20000597          	auipc	a1,0x20000
+ 1d0:	e3458593          	addi	a1,a1,-460 # 20000000 <_data_end>
+ 1d4:	20000617          	auipc	a2,0x20000
+ 1d8:	e2c60613          	addi	a2,a2,-468 # 20000000 <_data_end>
+ 1dc:	00c5fa63          	bgeu	a1,a2,1f0 <copy_data_end>
+
+000001e0 <copy_data_loop>:
+ 1e0:	00052283          	lw	t0,0(a0)
+ 1e4:	0055a023          	sw	t0,0(a1)
+ 1e8:	0511                	addi	a0,a0,4
+ 1ea:	0591                	addi	a1,a1,4
+ 1ec:	fec5eae3          	bltu	a1,a2,1e0 <copy_data_loop>
+
+000001f0 <copy_data_end>:
+ 1f0:	20000517          	auipc	a0,0x20000
+ 1f4:	e1050513          	addi	a0,a0,-496 # 20000000 <_data_end>
+ 1f8:	20000597          	auipc	a1,0x20000
+ 1fc:	e0858593          	addi	a1,a1,-504 # 20000000 <_data_end>
+ 200:	00b57763          	bgeu	a0,a1,20e <clear_bss_end>
+
+00000204 <clear_bss_loop>:
+ 204:	00052023          	sw	zero,0(a0)
+ 208:	0511                	addi	a0,a0,4
+ 20a:	feb56de3          	bltu	a0,a1,204 <clear_bss_loop>
+
+0000020e <clear_bss_end>:
+ 20e:	400212b7          	lui	t0,0x40021
+ 212:	01828293          	addi	t0,t0,24 # 40021018 <RCU_APB2EN>
+ 216:	0002a303          	lw	t1,0(t0)
+ 21a:	000043b7          	lui	t2,0x4
+ 21e:	00d38393          	addi	t2,t2,13 # 400d <RCU_APB2EN_USART0EN+0xd>
+ 222:	00736333          	or	t1,t1,t2
+ 226:	0062a023          	sw	t1,0(t0)
+ 22a:	400117b7          	lui	a5,0x40011
+ 22e:	c0078793          	addi	a5,a5,-1024 # 40010c00 <GPIOB_BASE>
+ 232:	4398                	lw	a4,0(a5)
+ 234:	00100837          	lui	a6,0x100
+ 238:	fff80813          	addi	a6,a6,-1 # fffff <RCU_APB2EN_USART0EN+0xfbfff>
+ 23c:	010776b3          	and	a3,a4,a6
+ 240:	33300737          	lui	a4,0x33300
+ 244:	8f55                	or	a4,a4,a3
+ 246:	c398                	sw	a4,0(a5)
+ 248:	f0000813          	li	a6,-256
+ 24c:	010776b3          	and	a3,a4,a6
+ 250:	04400813          	li	a6,68
+ 254:	8f55                	or	a4,a4,a3
+ 256:	c398                	sw	a4,0(a5)
+ 258:	400112b7          	lui	t0,0x40011
+ 25c:	80428293          	addi	t0,t0,-2044 # 40010804 <GPIOA_CTL1>
+ 260:	0002a303          	lw	t1,0(t0)
+ 264:	fffff3b7          	lui	t2,0xfffff
+ 268:	00f38393          	addi	t2,t2,15 # fffff00f <ECLIC_ADDR_BASE+0x2dfff00f>
+ 26c:	00737e33          	and	t3,t1,t2
+ 270:	4b000313          	li	t1,1200
+ 274:	01c36333          	or	t1,t1,t3
+ 278:	0062a023          	sw	t1,0(t0)
+ 27c:	400142b7          	lui	t0,0x40014
+ 280:	80028293          	addi	t0,t0,-2048 # 40013800 <USART0_BASE>
+ 284:	34100313          	li	t1,833
+ 288:	0062a423          	sw	t1,8(t0)
+ 28c:	00002337          	lui	t1,0x2
+ 290:	00c30313          	addi	t1,t1,12 # 200c <USART_CTL0_UEN+0xc>
+ 294:	0062a623          	sw	t1,12(t0)
+ 298:	05300313          	li	t1,83
+ 29c:	00628223          	sb	t1,4(t0)
+ 2a0:	d20012b7          	lui	t0,0xd2001
+ 2a4:	0e128293          	addi	t0,t0,225 # d20010e1 <ECLIC_ADDR_BASE+0x10e1>
+ 2a8:	00100313          	li	t1,1
+ 2ac:	00628023          	sb	t1,0(t0)
+ 2b0:	d20012b7          	lui	t0,0xd2001
+ 2b4:	0e228293          	addi	t0,t0,226 # d20010e2 <ECLIC_ADDR_BASE+0x10e2>
+ 2b8:	00100313          	li	t1,1
+ 2bc:	0062a023          	sw	t1,0(t0)
+ 2c0:	30046073          	csrsi	mstatus,8
+ 2c4:	400114b7          	lui	s1,0x40011
+ 2c8:	c0848493          	addi	s1,s1,-1016 # 40010c08 <GPIOB_ISTAT>
+
+000002cc <MAIN_LOOP>:
+ 2cc:	00049283          	lh	t0,0(s1)
+ 2d0:	0012f313          	andi	t1,t0,1
+ 2d4:	00031463          	bnez	t1,2dc <TEST_RBTN>
+ 2d8:	00000073          	ecall
+
+000002dc <TEST_RBTN>:
+ 2dc:	0022f313          	andi	t1,t0,2
+ 2e0:	fe0316e3          	bnez	t1,2cc <MAIN_LOOP>
+ 2e4:	400143b7          	lui	t2,0x40014
+ 2e8:	80038393          	addi	t2,t2,-2048 # 40013800 <USART0_BASE>
+ 2ec:	00002e37          	lui	t3,0x2
+ 2f0:	08ce0e13          	addi	t3,t3,140 # 208c <USART_CTL0_UEN+0x8c>
+ 2f4:	01c3a623          	sw	t3,12(t2)
+ 2f8:	bfd1                	j	2cc <MAIN_LOOP>
+
+000002fa <sleep>:
+ 2fa:	157d                	addi	a0,a0,-1
+ 2fc:	fd7d                	bnez	a0,2fa <sleep>
+ 2fe:	8082                	ret
+
+00000300 <nmi_entry>:
+ 300:	30200073          	mret
+
+00000304 <irq_entry>:
+ 304:	1171                	addi	sp,sp,-4
+ 306:	c016                	sw	t0,0(sp)
+ 308:	1171                	addi	sp,sp,-4
+ 30a:	c01a                	sw	t1,0(sp)
+ 30c:	1171                	addi	sp,sp,-4
+ 30e:	c02a                	sw	a0,0(sp)
+ 310:	34202573          	csrr	a0,mcause
+ 314:	000012b7          	lui	t0,0x1
+ 318:	fff28293          	addi	t0,t0,-1 # fff <CSR_MTVT2+0x813>
+ 31c:	00557533          	and	a0,a0,t0
+ 320:	03800293          	li	t0,56
+ 324:	02a29f63          	bne	t0,a0,362 <irq_end>
+ 328:	400142b7          	lui	t0,0x40014
+ 32c:	80028293          	addi	t0,t0,-2048 # 40013800 <USART0_BASE>
+ 330:	00002337          	lui	t1,0x2
+ 334:	00c30313          	addi	t1,t1,12 # 200c <USART_CTL0_UEN+0xc>
+ 338:	0062a623          	sw	t1,12(t0)
+ 33c:	04900313          	li	t1,73
+ 340:	0062a223          	sw	t1,4(t0)
+ 344:	400112b7          	lui	t0,0x40011
+ 348:	c0c28293          	addi	t0,t0,-1012 # 40010c0c <GPIOB_OCTL>
+ 34c:	00029303          	lh	t1,0(t0)
+ 350:	04034313          	xori	t1,t1,64
+ 354:	00629023          	sh	t1,0(t0)
+ 358:	00018537          	lui	a0,0x18
+ 35c:	6a050513          	addi	a0,a0,1696 # 186a0 <RCU_APB2EN_USART0EN+0x146a0>
+ 360:	3f69                	jal	2fa <sleep>
+
+00000362 <irq_end>:
+ 362:	4502                	lw	a0,0(sp)
+ 364:	0111                	addi	sp,sp,4
+ 366:	4302                	lw	t1,0(sp)
+ 368:	0111                	addi	sp,sp,4
+ 36a:	4282                	lw	t0,0(sp)
+ 36c:	0111                	addi	sp,sp,4
+ 36e:	30200073          	mret
+ 372:	00000013          	nop
+ 376:	00000013          	nop
+ 37a:	00000013          	nop
+ 37e:	0001                	nop
+
+00000380 <trap_entry>:
+ 380:	1171                	addi	sp,sp,-4
+ 382:	c016                	sw	t0,0(sp)
+ 384:	1171                	addi	sp,sp,-4
+ 386:	c01a                	sw	t1,0(sp)
+ 388:	1171                	addi	sp,sp,-4
+ 38a:	c02a                	sw	a0,0(sp)
+ 38c:	400112b7          	lui	t0,0x40011
+ 390:	c0c28293          	addi	t0,t0,-1012 # 40010c0c <GPIOB_OCTL>
+ 394:	00029303          	lh	t1,0(t0)
+ 398:	02034313          	xori	t1,t1,32
+ 39c:	00629023          	sh	t1,0(t0)
+ 3a0:	341022f3          	csrr	t0,mepc
+ 3a4:	0291                	addi	t0,t0,4
+ 3a6:	34129073          	csrw	mepc,t0
+ 3aa:	00018537          	lui	a0,0x18
+ 3ae:	6a050513          	addi	a0,a0,1696 # 186a0 <RCU_APB2EN_USART0EN+0x146a0>
+ 3b2:	37a1                	jal	2fa <sleep>
+ 3b4:	4502                	lw	a0,0(sp)
+ 3b6:	0111                	addi	sp,sp,4
+ 3b8:	4302                	lw	t1,0(sp)
+ 3ba:	0111                	addi	sp,sp,4
+ 3bc:	4282                	lw	t0,0(sp)
+ 3be:	0111                	addi	sp,sp,4
+ 3c0:	30200073          	mret
+
+000003c4 <USART0_IRQHandler>:
+ 3c4:	1171                	addi	sp,sp,-4
+ 3c6:	c016                	sw	t0,0(sp)
+ 3c8:	1171                	addi	sp,sp,-4
+ 3ca:	c02a                	sw	a0,0(sp)
+ 3cc:	400142b7          	lui	t0,0x40014
+ 3d0:	80028293          	addi	t0,t0,-2048 # 40013800 <USART0_BASE>
+ 3d4:	00002537          	lui	a0,0x2
+ 3d8:	00c50513          	addi	a0,a0,12 # 200c <USART_CTL0_UEN+0xc>
+ 3dc:	00a2a623          	sw	a0,12(t0)
+ 3e0:	05500513          	li	a0,85
+ 3e4:	00a2a223          	sw	a0,4(t0)
+ 3e8:	400112b7          	lui	t0,0x40011
+ 3ec:	c0c28293          	addi	t0,t0,-1012 # 40010c0c <GPIOB_OCTL>
+ 3f0:	00029503          	lh	a0,0(t0)
+ 3f4:	08054513          	xori	a0,a0,128
+ 3f8:	00a29023          	sh	a0,0(t0)
+ 3fc:	00018537          	lui	a0,0x18
+ 400:	6a050513          	addi	a0,a0,1696 # 186a0 <RCU_APB2EN_USART0EN+0x146a0>
+ 404:	3ddd                	jal	2fa <sleep>
+ 406:	4502                	lw	a0,0(sp)
+ 408:	0111                	addi	sp,sp,4
+ 40a:	4282                	lw	t0,0(sp)
+ 40c:	0111                	addi	sp,sp,4
+ 40e:	30200073          	mret
+	...
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	2841                	jal	90 <USART_CTL0_TBEIE+0x10>
+   2:	0000                	unimp
+   4:	7200                	flw	fs0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <GPIO_MASK+0x5>
+   c:	001e                	c.slli	zero,0x7
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3376                	fld	ft6,376(sp)
+  14:	6932                	flw	fs2,12(sp)
+  16:	7032                	flw	ft0,44(sp)
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	jal	fffff9c4 <ECLIC_ADDR_BASE+0x2dfff9c4>
+  1c:	3070                	fld	fa2,224(s0)
+  1e:	615f 7032 5f30      	0x5f307032615f
+  24:	30703263          	0x30703263
+	...

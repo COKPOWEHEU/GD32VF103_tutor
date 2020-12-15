@@ -1,0 +1,106 @@
+
+res/firmware.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	20008117          	auipc	sp,0x20008
+   4:	00010113          	mv	sp,sp
+   8:	0c400513          	li	a0,196
+   c:	20000597          	auipc	a1,0x20000
+  10:	ff458593          	addi	a1,a1,-12 # 20000000 <_data_start>
+  14:	20000617          	auipc	a2,0x20000
+  18:	ff460613          	addi	a2,a2,-12 # 20000008 <_data_end>
+  1c:	00c5fa63          	bgeu	a1,a2,30 <copy_data_end>
+
+00000020 <copy_data_loop>:
+  20:	00052283          	lw	t0,0(a0)
+  24:	0055a023          	sw	t0,0(a1)
+  28:	0511                	addi	a0,a0,4
+  2a:	0591                	addi	a1,a1,4
+  2c:	fec5eae3          	bltu	a1,a2,20 <copy_data_loop>
+
+00000030 <copy_data_end>:
+  30:	20000517          	auipc	a0,0x20000
+  34:	fd850513          	addi	a0,a0,-40 # 20000008 <_data_end>
+  38:	20000597          	auipc	a1,0x20000
+  3c:	fd058593          	addi	a1,a1,-48 # 20000008 <_data_end>
+  40:	00b57763          	bgeu	a0,a1,4e <clear_bss_end>
+
+00000044 <clear_bss_loop>:
+  44:	00052023          	sw	zero,0(a0)
+  48:	0511                	addi	a0,a0,4
+  4a:	feb56de3          	bltu	a0,a1,44 <clear_bss_loop>
+
+0000004e <clear_bss_end>:
+  4e:	400217b7          	lui	a5,0x40021
+  52:	01878793          	addi	a5,a5,24 # 40021018 <RCU_APB2EN>
+  56:	4398                	lw	a4,0(a5)
+  58:	00876713          	ori	a4,a4,8
+  5c:	c398                	sw	a4,0(a5)
+  5e:	400117b7          	lui	a5,0x40011
+  62:	c0078793          	addi	a5,a5,-1024 # 40010c00 <GPIOB_CTL0>
+  66:	4398                	lw	a4,0(a5)
+  68:	00100837          	lui	a6,0x100
+  6c:	fff80813          	addi	a6,a6,-1 # fffff <_data_load+0xfff3b>
+  70:	010776b3          	and	a3,a4,a6
+  74:	33300737          	lui	a4,0x33300
+  78:	8f55                	or	a4,a4,a3
+  7a:	c398                	sw	a4,0(a5)
+
+0000007c <MAIN_LOOP>:
+  7c:	40011437          	lui	s0,0x40011
+  80:	c0c40413          	addi	s0,s0,-1012 # 40010c0c <GPIOB_OCTL>
+  84:	00041483          	lh	s1,0(s0)
+  88:	f1f00913          	li	s2,-225
+  8c:	20000997          	auipc	s3,0x20000
+  90:	f7498993          	addi	s3,s3,-140 # 20000000 <_data_start>
+  94:	20000a17          	auipc	s4,0x20000
+  98:	f74a0a13          	addi	s4,s4,-140 # 20000008 <_data_end>
+
+0000009c <led_loop>:
+  9c:	00099283          	lh	t0,0(s3)
+  a0:	0124f4b3          	and	s1,s1,s2
+  a4:	0054e4b3          	or	s1,s1,t0
+  a8:	00941023          	sh	s1,0(s0)
+  ac:	00049537          	lui	a0,0x49
+  b0:	3e050513          	addi	a0,a0,992 # 493e0 <_data_load+0x4931c>
+  b4:	2029                	jal	be <sleep>
+  b6:	0989                	addi	s3,s3,2
+  b8:	ff49e2e3          	bltu	s3,s4,9c <led_loop>
+  bc:	b7c1                	j	7c <MAIN_LOOP>
+
+000000be <sleep>:
+  be:	157d                	addi	a0,a0,-1
+  c0:	fd7d                	bnez	a0,be <sleep>
+  c2:	8082                	ret
+
+Disassembly of section .data:
+
+20000000 <_data_start>:
+20000000:	0020                	addi	s0,sp,8
+20000002:	0040                	addi	s0,sp,4
+20000004:	0080                	addi	s0,sp,64
+20000006:	0040                	addi	s0,sp,4
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	2841                	jal	90 <MAIN_LOOP+0x14>
+   2:	0000                	unimp
+   4:	7200                	flw	fs0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <GPIO_MASK+0x5>
+   c:	001e                	c.slli	zero,0x7
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3376                	fld	ft6,376(sp)
+  14:	6932                	flw	fs2,12(sp)
+  16:	7032                	flw	ft0,44(sp)
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	jal	fffff9c4 <RCU_APB2EN+0xbffde9ac>
+  1c:	3070                	fld	fa2,224(s0)
+  1e:	615f 7032 5f30      	0x5f307032615f
+  24:	30703263          	0x30703263
+	...

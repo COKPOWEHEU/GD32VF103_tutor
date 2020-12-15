@@ -1,0 +1,192 @@
+
+res/firmware.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	20008117          	auipc	sp,0x20008
+   4:	00010113          	mv	sp,sp
+   8:	19c00513          	li	a0,412
+   c:	20000597          	auipc	a1,0x20000
+  10:	ff458593          	addi	a1,a1,-12 # 20000000 <_data_end>
+  14:	20000617          	auipc	a2,0x20000
+  18:	fec60613          	addi	a2,a2,-20 # 20000000 <_data_end>
+  1c:	00c5fa63          	bgeu	a1,a2,30 <copy_data_end>
+
+00000020 <copy_data_loop>:
+  20:	00052283          	lw	t0,0(a0)
+  24:	0055a023          	sw	t0,0(a1)
+  28:	0511                	addi	a0,a0,4
+  2a:	0591                	addi	a1,a1,4
+  2c:	fec5eae3          	bltu	a1,a2,20 <copy_data_loop>
+
+00000030 <copy_data_end>:
+  30:	20000517          	auipc	a0,0x20000
+  34:	fd050513          	addi	a0,a0,-48 # 20000000 <_data_end>
+  38:	20000597          	auipc	a1,0x20000
+  3c:	02c58593          	addi	a1,a1,44 # 20000064 <_bss_end>
+  40:	00b57763          	bgeu	a0,a1,4e <clear_bss_end>
+
+00000044 <clear_bss_loop>:
+  44:	00052023          	sw	zero,0(a0)
+  48:	0511                	addi	a0,a0,4
+  4a:	feb56de3          	bltu	a0,a1,44 <clear_bss_loop>
+
+0000004e <clear_bss_end>:
+  4e:	400212b7          	lui	t0,0x40021
+  52:	01828293          	addi	t0,t0,24 # 40021018 <RCU_APB2EN>
+  56:	0002a303          	lw	t1,0(t0)
+  5a:	000043b7          	lui	t2,0x4
+  5e:	00d38393          	addi	t2,t2,13 # 400d <RCU_APB2EN_USART0EN+0xd>
+  62:	00736333          	or	t1,t1,t2
+  66:	0062a023          	sw	t1,0(t0)
+  6a:	400117b7          	lui	a5,0x40011
+  6e:	c0078793          	addi	a5,a5,-1024 # 40010c00 <GPIOB_BASE>
+  72:	4398                	lw	a4,0(a5)
+  74:	00100837          	lui	a6,0x100
+  78:	fff80813          	addi	a6,a6,-1 # fffff <RCU_APB2EN_USART0EN+0xfbfff>
+  7c:	010776b3          	and	a3,a4,a6
+  80:	33300737          	lui	a4,0x33300
+  84:	8f55                	or	a4,a4,a3
+  86:	c398                	sw	a4,0(a5)
+  88:	400112b7          	lui	t0,0x40011
+  8c:	80428293          	addi	t0,t0,-2044 # 40010804 <GPIOA_CTL1>
+  90:	0002a303          	lw	t1,0(t0)
+  94:	fffff3b7          	lui	t2,0xfffff
+  98:	00f38393          	addi	t2,t2,15 # fffff00f <RCU_APB2EN+0xbffddff7>
+  9c:	00737e33          	and	t3,t1,t2
+  a0:	4b000313          	li	t1,1200
+  a4:	01c36333          	or	t1,t1,t3
+  a8:	0062a023          	sw	t1,0(t0)
+  ac:	400142b7          	lui	t0,0x40014
+  b0:	80028293          	addi	t0,t0,-2048 # 40013800 <USART0_BASE>
+  b4:	34100313          	li	t1,833
+  b8:	0062a423          	sw	t1,8(t0)
+  bc:	00002337          	lui	t1,0x2
+  c0:	00c30313          	addi	t1,t1,12 # 200c <USART_CTL0_UEN+0xc>
+  c4:	0062a623          	sw	t1,12(t0)
+  c8:	00000517          	auipc	a0,0x0
+  cc:	0c350513          	addi	a0,a0,195 # 18b <hwstr>
+  d0:	28a9                	jal	12a <uart_puts>
+
+000000d2 <MAIN_LOOP>:
+  d2:	20000517          	auipc	a0,0x20000
+  d6:	f2e50513          	addi	a0,a0,-210 # 20000000 <_data_end>
+  da:	06300593          	li	a1,99
+  de:	288d                	jal	150 <uart_gets>
+  e0:	20000517          	auipc	a0,0x20000
+  e4:	f2050513          	addi	a0,a0,-224 # 20000000 <_data_end>
+  e8:	2839                	jal	106 <toupper>
+  ea:	20000517          	auipc	a0,0x20000
+  ee:	f1650513          	addi	a0,a0,-234 # 20000000 <_data_end>
+  f2:	2825                	jal	12a <uart_puts>
+  f4:	00000517          	auipc	a0,0x0
+  f8:	09450513          	addi	a0,a0,148 # 188 <termbytes>
+  fc:	203d                	jal	12a <uart_puts>
+  fe:	bfd1                	j	d2 <MAIN_LOOP>
+
+00000100 <sleep>:
+ 100:	157d                	addi	a0,a0,-1
+ 102:	fd7d                	bnez	a0,100 <sleep>
+ 104:	8082                	ret
+
+00000106 <toupper>:
+ 106:	06100313          	li	t1,97
+ 10a:	07a00393          	li	t2,122
+
+0000010e <toupper_loop>:
+ 10e:	00050283          	lb	t0,0(a0)
+ 112:	00028b63          	beqz	t0,128 <toupper_end>
+ 116:	0062e763          	bltu	t0,t1,124 <toupper_skip_up>
+ 11a:	0053e563          	bltu	t2,t0,124 <toupper_skip_up>
+ 11e:	1281                	addi	t0,t0,-32
+ 120:	00550023          	sb	t0,0(a0)
+
+00000124 <toupper_skip_up>:
+ 124:	0505                	addi	a0,a0,1
+ 126:	b7e5                	j	10e <toupper_loop>
+
+00000128 <toupper_end>:
+ 128:	8082                	ret
+
+0000012a <uart_puts>:
+ 12a:	400142b7          	lui	t0,0x40014
+ 12e:	80028293          	addi	t0,t0,-2048 # 40013800 <USART0_BASE>
+
+00000132 <uart_str_loop>:
+ 132:	00050303          	lb	t1,0(a0)
+ 136:	00030c63          	beqz	t1,14e <uart_str_end>
+
+0000013a <uart_str_wait_flag>:
+ 13a:	00029383          	lh	t2,0(t0)
+ 13e:	0803f393          	andi	t2,t2,128
+ 142:	fe038ce3          	beqz	t2,13a <uart_str_wait_flag>
+ 146:	00628223          	sb	t1,4(t0)
+ 14a:	0505                	addi	a0,a0,1
+ 14c:	b7dd                	j	132 <uart_str_loop>
+
+0000014e <uart_str_end>:
+ 14e:	8082                	ret
+
+00000150 <uart_gets>:
+ 150:	400142b7          	lui	t0,0x40014
+ 154:	80028293          	addi	t0,t0,-2048 # 40013800 <USART0_BASE>
+ 158:	00b50333          	add	t1,a0,a1
+ 15c:	43b5                	li	t2,13
+ 15e:	4e29                	li	t3,10
+
+00000160 <uart_gets_loop>:
+ 160:	0002ae83          	lw	t4,0(t0)
+ 164:	020efe93          	andi	t4,t4,32
+ 168:	fe0e8ce3          	beqz	t4,160 <uart_gets_loop>
+ 16c:	00428e83          	lb	t4,4(t0)
+ 170:	007e8963          	beq	t4,t2,182 <uart_gets_end>
+ 174:	01ce8763          	beq	t4,t3,182 <uart_gets_end>
+ 178:	01d50023          	sb	t4,0(a0)
+ 17c:	0505                	addi	a0,a0,1
+ 17e:	fe6561e3          	bltu	a0,t1,160 <uart_gets_loop>
+
+00000182 <uart_gets_end>:
+ 182:	00050023          	sb	zero,0(a0)
+ 186:	8082                	ret
+
+00000188 <termbytes>:
+ 188:	0a0d                	addi	s4,s4,3
+	...
+
+0000018b <hwstr>:
+ 18b:	6548                	flw	fa0,12(a0)
+ 18d:	6c6c                	flw	fa1,92(s0)
+ 18f:	6f77206f          	j	73085 <RCU_APB2EN_USART0EN+0x6f085>
+ 193:	6c72                	flw	fs8,28(sp)
+ 195:	0d64                	addi	s1,sp,668
+ 197:	000a                	c.slli	zero,0x2
+ 199:	0000                	unimp
+	...
+
+Disassembly of section .bss:
+
+20000000 <_bss_start>:
+	...
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	2841                	jal	90 <USART_STAT_TBE+0x10>
+   2:	0000                	unimp
+   4:	7200                	flw	fs0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <GPIO_MASK+0x5>
+   c:	001e                	c.slli	zero,0x7
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3376                	fld	ft6,376(sp)
+  14:	6932                	flw	fs2,12(sp)
+  16:	7032                	flw	ft0,44(sp)
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	jal	fffff9c4 <RCU_APB2EN+0xbffde9ac>
+  1c:	3070                	fld	fa2,224(s0)
+  1e:	615f 7032 5f30      	0x5f307032615f
+  24:	30703263          	0x30703263
+	...

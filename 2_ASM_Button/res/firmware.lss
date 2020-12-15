@@ -1,0 +1,90 @@
+
+res/firmware.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010054 <_start>:
+   10054:	400217b7          	lui	a5,0x40021
+   10058:	01878793          	addi	a5,a5,24 # 40021018 <RCU_APB2EN>
+   1005c:	4398                	lw	a4,0(a5)
+   1005e:	00876713          	ori	a4,a4,8
+   10062:	c398                	sw	a4,0(a5)
+   10064:	400117b7          	lui	a5,0x40011
+   10068:	c0078793          	addi	a5,a5,-1024 # 40010c00 <GPIOB_CTL0>
+   1006c:	4398                	lw	a4,0(a5)
+   1006e:	ff100837          	lui	a6,0xff100
+   10072:	fff80813          	addi	a6,a6,-1 # ff0fffff <RCU_APB2EN+0xbf0defe7>
+   10076:	010776b3          	and	a3,a4,a6
+   1007a:	00300737          	lui	a4,0x300
+   1007e:	8f55                	or	a4,a4,a3
+   10080:	f1000837          	lui	a6,0xf1000
+   10084:	fff80813          	addi	a6,a6,-1 # f0ffffff <RCU_APB2EN+0xb0fdefe7>
+   10088:	010776b3          	and	a3,a4,a6
+   1008c:	03000737          	lui	a4,0x3000
+   10090:	8f55                	or	a4,a4,a3
+   10092:	10000837          	lui	a6,0x10000
+   10096:	fff80813          	addi	a6,a6,-1 # fffffff <__global_pointer$+0xffee6f1>
+   1009a:	010776b3          	and	a3,a4,a6
+   1009e:	30000737          	lui	a4,0x30000
+   100a2:	8f55                	or	a4,a4,a3
+   100a4:	c398                	sw	a4,0(a5)
+   100a6:	400117b7          	lui	a5,0x40011
+   100aa:	c0078793          	addi	a5,a5,-1024 # 40010c00 <GPIOB_CTL0>
+   100ae:	4398                	lw	a4,0(a5)
+   100b0:	f0f00813          	li	a6,-241
+   100b4:	010776b3          	and	a3,a4,a6
+   100b8:	04000713          	li	a4,64
+   100bc:	8f55                	or	a4,a4,a3
+   100be:	ff000813          	li	a6,-16
+   100c2:	010776b3          	and	a3,a4,a6
+   100c6:	00400713          	li	a4,4
+   100ca:	8f55                	or	a4,a4,a3
+   100cc:	c398                	sw	a4,0(a5)
+   100ce:	00000693          	li	a3,0
+
+000100d2 <MAIN_LOOP>:
+   100d2:	400117b7          	lui	a5,0x40011
+   100d6:	c0c78793          	addi	a5,a5,-1012 # 40010c0c <GPIOB_OCTL>
+   100da:	4398                	lw	a4,0(a5)
+   100dc:	f1f77713          	andi	a4,a4,-225
+   100e0:	01076733          	or	a4,a4,a6
+   100e4:	c398                	sw	a4,0(a5)
+   100e6:	02068693          	addi	a3,a3,32
+   100ea:	0606f813          	andi	a6,a3,96
+   100ee:	400117b7          	lui	a5,0x40011
+   100f2:	c0878793          	addi	a5,a5,-1016 # 40010c08 <GPIOB_ISTAT>
+   100f6:	4398                	lw	a4,0(a5)
+   100f8:	8b05                	andi	a4,a4,1
+   100fa:	e319                	bnez	a4,10100 <SBTN_SKIP>
+   100fc:	08086813          	ori	a6,a6,128
+
+00010100 <SBTN_SKIP>:
+   10100:	000317b7          	lui	a5,0x31
+   10104:	d4078793          	addi	a5,a5,-704 # 30d40 <__global_pointer$+0x1f432>
+
+00010108 <sleep>:
+   10108:	17fd                	addi	a5,a5,-1
+   1010a:	fffd                	bnez	a5,10108 <sleep>
+   1010c:	b7d9                	j	100d2 <MAIN_LOOP>
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	2841                	jal	90 <GPIO_MASK+0x81>
+   2:	0000                	unimp
+   4:	7200                	flw	fs0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <GPIO_MASK+0x5>
+   c:	001e                	c.slli	zero,0x7
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3376                	fld	ft6,376(sp)
+  14:	6932                	flw	fs2,12(sp)
+  16:	7032                	flw	ft0,44(sp)
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	jal	fffff9c4 <RCU_APB2EN+0xbffde9ac>
+  1c:	3070                	fld	fa2,224(s0)
+  1e:	615f 7032 5f30      	0x5f307032615f
+  24:	30703263          	0x30703263
+	...

@@ -1,0 +1,56 @@
+
+res/firmware.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010054 <_start>:
+   10054:	400217b7          	lui	a5,0x40021
+   10058:	01878793          	addi	a5,a5,24 # 40021018 <RCU_APB2EN>
+   1005c:	4398                	lw	a4,0(a5)
+   1005e:	00876713          	ori	a4,a4,8
+   10062:	c398                	sw	a4,0(a5)
+   10064:	400117b7          	lui	a5,0x40011
+   10068:	c0078793          	addi	a5,a5,-1024 # 40010c00 <GPIOB_CTL0>
+   1006c:	4398                	lw	a4,0(a5)
+   1006e:	ff100837          	lui	a6,0xff100
+   10072:	fff80813          	addi	a6,a6,-1 # ff0fffff <RCU_APB2EN+0xbf0defe7>
+   10076:	010776b3          	and	a3,a4,a6
+   1007a:	00300737          	lui	a4,0x300
+   1007e:	8f55                	or	a4,a4,a3
+   10080:	c398                	sw	a4,0(a5)
+
+00010082 <MAIN_LOOP>:
+   10082:	400117b7          	lui	a5,0x40011
+   10086:	c0c78793          	addi	a5,a5,-1012 # 40010c0c <GPIOB_OCTL>
+   1008a:	4398                	lw	a4,0(a5)
+   1008c:	02074713          	xori	a4,a4,32
+   10090:	c398                	sw	a4,0(a5)
+   10092:	000317b7          	lui	a5,0x31
+   10096:	d4078793          	addi	a5,a5,-704 # 30d40 <__global_pointer$+0x1f4a0>
+
+0001009a <sleep>:
+   1009a:	17fd                	addi	a5,a5,-1
+   1009c:	fffd                	bnez	a5,1009a <sleep>
+   1009e:	b7d5                	j	10082 <MAIN_LOOP>
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	2841                	jal	90 <GPIO_MASK+0x81>
+   2:	0000                	unimp
+   4:	7200                	flw	fs0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <GPIO_MASK+0x5>
+   c:	001e                	c.slli	zero,0x7
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3376                	fld	ft6,376(sp)
+  14:	6932                	flw	fs2,12(sp)
+  16:	7032                	flw	ft0,44(sp)
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	jal	fffff9c4 <RCU_APB2EN+0xbffde9ac>
+  1c:	3070                	fld	fa2,224(s0)
+  1e:	615f 7032 5f30      	0x5f307032615f
+  24:	30703263          	0x30703263
+	...
