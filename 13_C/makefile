@@ -14,16 +14,18 @@ OBJCOPY=$(CROSS_COMPILE)objcopy
 OBJDUMP=$(CROSS_COMPILE)objdump
 SIZE=$(CROSS_COMPILE)size
 
-COMMON := -march=rv32imac -mabi=ilp32 -mcmodel=medany
-ASMFLAGS := $(COMMON)
-CFLAGS:=$(COMMON)
+COMMON  = -MD -MP -MT $(builddir)/$(*F).o -MF $(builddir)/dep/$(@F).mk
+COMMON += -march=rv32imac -mabi=ilp32 -mcmodel=medany 
+ASMFLAGS = $(COMMON)
+CFLAGS=$(COMMON)
 CFLAGS+=-Wall -Os -g -Wno-main -Wstack-usage=400 -ffreestanding -Wno-unused -nostdlib
 CFLAGS+=-fno-builtin-printf
 CFLAGS+=-I$(libdir)/Firmware/GD32VF103_standard_peripheral/Include
 CFLAGS+=-I$(libdir)/Firmware/GD32VF103_standard_peripheral
 CFLAGS+=-I$(libdir)/Firmware/RISCV/drivers
 CFLAGS+=-I$(libdir)/Firmware
-CFLAGS += -MD -MP -MT $(builddir)/$(*F).o -MF $(builddir)/dep/$(@F).mk
+CFLAGS+=-I$(libdir)
+#CFLAGS += -MD -MP -MT $(builddir)/$(*F).o -MF $(builddir)/dep/$(@F).mk
 CFLAGS+=-DGD32VF103C_START
 LDFLAGS := -march=rv32imac -mabi=ilp32 -mcmodel=medany -nostdlib -T$(libdir)/gd32vf103cbt6.ld
 

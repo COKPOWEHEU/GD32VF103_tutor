@@ -1,6 +1,6 @@
 progname := firmware
 progdir := res
-files := main startup n200_func
+files = main startup n200_func
 
 srcdir := src
 builddir := build
@@ -14,9 +14,10 @@ OBJCOPY=$(CROSS_COMPILE)objcopy
 OBJDUMP=$(CROSS_COMPILE)objdump
 SIZE=$(CROSS_COMPILE)size
 
-COMMON := -march=rv32imac -mabi=ilp32 -mcmodel=medany
-ASMFLAGS := $(COMMON)
-CFLAGS:=$(COMMON)
+COMMON  = -MD -MP -MT $(builddir)/$(*F).o -MF $(builddir)/dep/$(@F).mk
+COMMON += -march=rv32imac -mabi=ilp32 -mcmodel=medany 
+ASMFLAGS = $(COMMON)
+CFLAGS=$(COMMON)
 CFLAGS+=-Wall -Os -g -Wno-main -Wstack-usage=400 -ffreestanding -Wno-unused -nostdlib
 CFLAGS+=-fno-builtin-printf
 CFLAGS+=-I$(libdir)/Firmware/GD32VF103_standard_peripheral/Include
@@ -24,7 +25,7 @@ CFLAGS+=-I$(libdir)/Firmware/GD32VF103_standard_peripheral
 CFLAGS+=-I$(libdir)/Firmware/RISCV/drivers
 CFLAGS+=-I$(libdir)/Firmware
 CFLAGS+=-I$(libdir)
-CFLAGS += -MD -MP -MT $(builddir)/$(*F).o -MF $(builddir)/dep/$(@F).mk
+#CFLAGS += -MD -MP -MT $(builddir)/$(*F).o -MF $(builddir)/dep/$(@F).mk
 CFLAGS+=-DGD32VF103C_START
 LDFLAGS := -march=rv32imac -mabi=ilp32 -mcmodel=medany -nostdlib -T$(libdir)/gd32vf103cbt6.ld
 
@@ -40,21 +41,23 @@ $(frmname).hex: $(frmname).elf
 $(frmname).lss: $(frmname).elf
 	$(OBJDUMP) -D -S $(frmname).elf > $(frmname).lss
 
-$(frmname).elf: $(objs) $(LSCRIPT)
+$(frmname).elf: $(objs)
 	mkdir -p $(progdir)
 	@ echo "..linking"
 	$(LD) $(LDFLAGS) $(objs) -o $@ 
 
 $(builddir)/%.o: $(srcdir)/%.c
 	mkdir -p $(builddir)
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+	
 $(builddir)/%.o: $(srcdir)/%.S
 	mkdir -p $(builddir)
-	$(CC) -c $(ASMFLAGS) $< -o $@
+	$(CC) $(ASMFLAGS) -c $< -o $@
 	
 $(builddir)/n200_func.o: $(libdir)/Firmware/RISCV/drivers/n200_func.c
 	mkdir -p $(builddir)
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
 	
 clean:
 	rm -rf $(progdir)

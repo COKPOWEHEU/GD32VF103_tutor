@@ -1134,7 +1134,7 @@ Disassembly of section .debug_info:
        c:	03f2                	slli	t2,t2,0x1c
        e:	0000                	unimp
       10:	3a0c                	fld	fa1,48(a2)
-      12:	ab000003          	lb	zero,-1360(zero) # fffffab0 <_stack_end+0xdfff7ab0>
+      12:	e3000003          	lb	zero,-464(zero) # fffffe30 <_stack_end+0xdfff7e30>
       16:	0002                	c.slli64	zero
       18:	5000                	lw	s0,32(s0)
 	...
@@ -1318,7 +1318,7 @@ Disassembly of section .debug_info:
      1b6:	0355                	addi	t1,t1,21
      1b8:	0000039b          	0x39b
      1bc:	0356                	slli	t1,t1,0x15
-     1be:	02f9                	addi	t0,t0,30
+     1be:	02be                	slli	t0,t0,0xf
      1c0:	0000                	unimp
      1c2:	04040057          	0x4040057
      1c6:	00028807          	0x28807
@@ -1353,7 +1353,7 @@ void USART0_IRQHandler(void){
      1f8:	0000                	unimp
      1fa:	0204                	addi	s1,sp,256
 void USART0_IRQHandler(void){
-     1fc:	0002e607          	0x2e607
+     1fc:	0002ab07          	flw	fs6,0(t0)
   USART_CTL0(USART0) &=~ USART_CTL0_TBEIE;
      200:	0500                	addi	s0,sp,640
 void USART0_IRQHandler(void){
@@ -1717,11 +1717,9 @@ void USART0_IRQHandler(void){
      45e:	00000053          	fadd.s	ft0,ft0,ft0,rne
      462:	14062903          	lw	s2,320(a2)
   *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_CFG_OFFSET)=0;
-     466:	030e                	slli	t1,t1,0x3
-     468:	0000                	unimp
-     46a:	030e                	slli	t1,t1,0x3
+     466:	000002d3          	fadd.s	ft5,ft0,ft0,rne
+     46a:	000002d3          	fadd.s	ft5,ft0,ft0,rne
   *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_MTH_OFFSET)=0;
-     46c:	0000                	unimp
      46e:	14064f03          	lbu	t5,320(a2)
   vuint32_t * upper = (vuint32_t*)(base + num_irq*4);
      472:	00f2                	slli	ra,ra,0x1c
@@ -1741,7 +1739,7 @@ void USART0_IRQHandler(void){
      48a:	03f2                	slli	t2,t2,0x1c
      48c:	0000                	unimp
      48e:	480c                	lw	a1,16(s0)
-     490:	ab000007          	0xab000007
+     490:	e3000007          	0xe3000007
      494:	0002                	c.slli64	zero
 }
      496:	8000                	0x8000
@@ -1784,9 +1782,8 @@ void USART0_IRQHandler(void){
      4d8:	0200                	addi	s0,sp,256
      4da:	0702                	c.slli64	a4
 }
-     4dc:	02e6                	slli	t0,t0,0x19
+     4dc:	000002ab          	0x2ab
   return *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_CTRL_OFFSET+source*4);
-     4de:	0000                	unimp
      4e0:	00078c03          	lb	s8,0(a5) # d2001000 <_stack_end+0xb1ff9000>
      4e4:	0200                	addi	s0,sp,256
      4e6:	1934                	addi	a3,sp,184
@@ -2160,8 +2157,7 @@ uint8_t eclic_get_irq_priority(uint32_t source) {
      752:	0000                	unimp
   return *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_INT_ATTR_OFFSET+source*4);
      754:	0700                	addi	s0,sp,896
-     756:	030e                	slli	t1,t1,0x3
-     758:	0000                	unimp
+     756:	000002d3          	fadd.s	ft5,ft0,ft0,rne
      75a:	5401                	li	s0,-32
      75c:	0601                	addi	a2,a2,0
      75e:	0724                	addi	s1,sp,904
@@ -8130,57 +8126,61 @@ void USART0_IRQHandler(void){
  2a4:	5f30                	lw	a2,120(a4)
  2a6:	5249                	li	tp,-14
  2a8:	6e51                	lui	t3,0x14
- 2aa:	2f00                	fld	fs0,24(a4)
- 2ac:	656d                	lui	a0,0x1b
- 2ae:	6964                	flw	fs1,84(a0)
- 2b0:	2f61                	jal	a48 <CSR_MTVT2+0x25c>
- 2b2:	7865                	lui	a6,0xffff9
- 2b4:	2f74                	fld	fa3,216(a4)
- 2b6:	6564                	flw	fs1,76(a0)
- 2b8:	2f76                	fld	ft10,344(sp)
- 2ba:	7270                	flw	fa2,100(a2)
- 2bc:	312f676f          	jal	a4,f65ce <CSR_MTVT2+0xf5de2>
- 2c0:	722d                	lui	tp,0xfffeb
- 2c2:	7369                	lui	t1,0xffffa
- 2c4:	69662f63          	0x69662f63
+ 2aa:	7300                	flw	fs0,32(a4)
+ 2ac:	6f68                	flw	fa0,92(a4)
+ 2ae:	7472                	flw	fs0,60(sp)
+ 2b0:	7520                	flw	fs0,104(a0)
+ 2b2:	736e                	flw	ft6,248(sp)
+ 2b4:	6769                	lui	a4,0x1a
+ 2b6:	656e                	flw	fa0,216(sp)
+ 2b8:	2064                	fld	fs1,192(s0)
+ 2ba:	6e69                	lui	t3,0x1a
+ 2bc:	0074                	addi	a3,sp,12
+ 2be:	4345                	li	t1,17
+ 2c0:	494c                	lw	a1,20(a0)
+ 2c2:	554e5f43          	0x554e5f43
   GPIO_config(SBTN); GPIO_config(RBTN);
- 2c8:	7372                	flw	ft6,60(sp)
+ 2c6:	5f4d                	li	t5,-13
+ 2c8:	4e49                	li	t3,18
   GPIO_config(UART0_RX); GPIO_config(UART0_TX);
- 2ca:	5f74                	lw	a3,124(a4)
- 2cc:	70657473          	csrrci	s0,0x706,10
+ 2ca:	4554                	lw	a3,12(a0)
+ 2cc:	5252                	lw	tp,52(sp)
+ 2ce:	5055                	c.li	zero,-11
   GPIO_config(SBTN); GPIO_config(RBTN);
- 2d0:	65645f73          	csrrwi	t5,0x656,8
- 2d4:	2f76                	fld	ft10,344(sp)
- 2d6:	3431                	jal	fffffce2 <_stack_end+0xdfff7ce2>
- 2d8:	435f 695f 746e      	0x746e695f435f
- 2de:	7265                	lui	tp,0xffff9
- 2e0:	7572                	flw	fa0,60(sp)
- 2e2:	7470                	flw	fa2,108(s0)
- 2e4:	68730073          	0x68730073
- 2e8:	2074726f          	jal	tp,47cee <CSR_MTVT2+0x47502>
+ 2d0:	5354                	lw	a3,36(a4)
+ 2d2:	6500                	flw	fs0,8(a0)
+ 2d4:	63696c63          	bltu	s2,s6,90c <CSR_MTVT2+0x120>
+ 2d8:	735f 7465 765f      	0x765f7465735f
+ 2de:	6f6d                	lui	t5,0x1b
+ 2e0:	6564                	flw	fs1,76(a0)
+ 2e2:	2f00                	fld	fs0,24(a4)
+ 2e4:	656d                	lui	a0,0x1b
+ 2e6:	6964                	flw	fs1,84(a0)
+ 2e8:	2f61                	jal	a80 <CSR_MTVT2+0x294>
   GPIO_config(UART0_RX); GPIO_config(UART0_TX);
- 2ec:	6e75                	lui	t3,0x1d
- 2ee:	6e676973          	csrrsi	s2,0x6e6,14
- 2f2:	6465                	lui	s0,0x19
- 2f4:	6920                	flw	fs0,80(a0)
- 2f6:	746e                	flw	fs0,248(sp)
- 2f8:	4500                	lw	s0,8(a0)
- 2fa:	43494c43          	fmadd.d	fs8,fs2,fs4,fs0,rmm
- 2fe:	4e5f 4d55 495f      	0x495f4d554e5f
- 304:	544e                	lw	s0,240(sp)
- 306:	5245                	li	tp,-15
+ 2ea:	7865                	lui	a6,0xffff9
+ 2ec:	2f74                	fld	fa3,216(a4)
+ 2ee:	6564                	flw	fs1,76(a0)
+ 2f0:	2f76                	fld	ft10,344(sp)
+ 2f2:	7270                	flw	fa2,100(a2)
+ 2f4:	312f676f          	jal	a4,f6606 <CSR_MTVT2+0xf5e1a>
+ 2f8:	722d                	lui	tp,0xfffeb
+ 2fa:	7369                	lui	t1,0xffffa
+ 2fc:	44472f63          	0x44472f63
+ 300:	46563233          	0x46563233
+ 304:	3031                	jal	fffffb10 <_stack_end+0xdfff7b10>
+ 306:	75745f33          	0x75745f33
   RCU_APB2EN |= RCU_APB2EN_USART0EN | RCU_APB2EN_AFEN;
- 308:	5552                	lw	a0,52(sp)
- 30a:	5450                	lw	a2,44(s0)
- 30c:	63650053          	0x63650053
- 310:	696c                	flw	fa1,84(a0)
+ 30a:	6f74                	flw	fa3,92(a4)
+ 30c:	2f72                	fld	ft10,280(sp)
+ 30e:	3431                	jal	fffffd1a <_stack_end+0xdfff7d1a>
+ 310:	435f 695f 746e      	0x746e695f435f
   USART_BAUD(USART0) = 8000000 / 9600;
- 312:	65735f63          	bge	t1,s7,970 <CSR_MTVT2+0x184>
- 316:	5f74                	lw	a3,124(a4)
- 318:	6d76                	flw	fs10,92(sp)
- 31a:	0065646f          	jal	s0,56320 <CSR_MTVT2+0x55b34>
+ 316:	7265                	lui	tp,0xffff9
+ 318:	7572                	flw	fa0,60(sp)
+ 31a:	7470                	flw	fa2,108(s0)
+ 31c:	54520073          	0x54520073
   USART_CTL0(USART0) = USART_CTL0_UEN | USART_CTL0_REN | USART_CTL0_TEN;
- 31e:	5452                	lw	s0,52(sp)
  320:	4c415f43          	0x4c415f43
  324:	5241                	li	tp,-16
   eclic_set_vmode( USART0_IRQn );
